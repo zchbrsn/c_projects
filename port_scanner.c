@@ -1,6 +1,7 @@
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -19,9 +20,10 @@ Example:
 
 int main(int argc, char *argv[]) {
 
-    if (argc != 5) {
+    if (argc < 5 || argc > 6) {
         // Usage statement
-        printf("Usage:\t%s <tcp|udp> <IP Address> <Port Start> <Port End>\n", argv[0]);
+        printf("Usage:\t%s <tcp|udp> <IP Address> <Port Start> <Port End> [-b]\n", argv[0]);
+        printf("\t -b is used to collect banner information.\n");
         printf("Examples:\n\t%s tcp 127.0.0.1 22 22\n", argv[0]);
         printf("\t%s udp 192.168.0.1 1 1024\n", argv[0]);
         exit(1);
@@ -34,6 +36,11 @@ int main(int argc, char *argv[]) {
     int sock;
     // end ambiguous variables
 
+    // Build timeout structure
+    struct timeval tv;
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+
     // TCP scanner
     if (strcmp("tcp", argv[1]) == 0) {
 
@@ -41,18 +48,50 @@ int main(int argc, char *argv[]) {
         for (int port = start_port; port <= end_port; port++) {
 
             sock = socket(AF_INET, SOCK_STREAM, 0);
-
             if (sock < 0) {
                 printf("[-] Socket Creation Error: %s", strerror(errno));
                 exit(1);
             }
+            if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) < 0) {
+                printf("[-] Socket option error: %s\n", strerror(errno));
+                exit(1);
+            }
+            /*
+            // Setting the port to non-blocking doesn't seem to return any responses or determine if a port is closed or open
+            // where socketfd is the socket you want to make non-blocking
+            int status = fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
+            if (status < 0){
+                printf("[-] Cannot set socket to non-blocking: %s\n", strerror(errno));
+            }
+            */
 
             struct sockaddr_in conn_addr;
             conn_addr.sin_family = AF_INET;
             conn_addr.sin_port = htons(port);
             conn_addr.sin_addr.s_addr = ip_addr;
 
-            if (connect(sock, (struct sockaddr *)&conn_addr, sizeof(conn_addr)) == 0) {
+            int res = connect(sock, (struct sockaddr *)&conn_addr, sizeof(conn_addr));
+            if (res < 0) {
+                if (argc == 6 && strcmp(argv[5], "-b") == 0) {
+                    char response[256];
+                    int recvlen = recv(sock, response, sizeof(response) -1, 0);
+                    if (recvlen < 0) {
+                        if (errno == EWOULDBLOCK || errno == ETIMEDOUT) {
+                            printf("[-] Timeout receiving data on port %d\n", port);
+                            close(sock);
+                        }
+                        else {
+                            printf("[-] Failed to receive data from server: %s\n", strerror(errno));
+                        }
+                    }
+                    else {
+                        response[recvlen] = '\0';
+                        printf("Received %d bytes from server\n", recvlen); // Debug print
+                        printf("%s\n", response);
+                    }
+                }
+            }
+            else {
                 printf("[+] Port %d open.\n", port);
             }
             close(sock);
@@ -67,26 +106,28 @@ int main(int argc, char *argv[]) {
         for (int port = start_port; port <= end_port; port++) {
 
             sock = socket(AF_INET, SOCK_DGRAM, 0);
-
+            if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) < 0) {
+                printf("[-] Socket option error: %s\n", strerror(errno));
+                exit(1);
+            }
             if (sock < 0) {
                 printf("[-] Socket Creation Error: %s", strerror(errno));
                 exit(1);
             }
+            /*
+            // Setting the port to non-blocking doesn't seem to return any responses or determine if a port is closed or open
+            // where socketfd is the socket you want to make non-blocking
+            int status = fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
+            if (status < 0){
+                printf("[-] Cannot set socket to non-blocking: %s\n", strerror(errno));
+            }
+            */
         
         // Build UDP socket structure
         struct sockaddr_in conn_addr;
         conn_addr.sin_family = AF_INET;
         conn_addr.sin_port = htons(port);
         conn_addr.sin_addr.s_addr = ip_addr;
-
-        // Build timeout structure
-        struct timeval tv;
-        tv.tv_sec = 5;
-        tv.tv_usec = 0;
-        if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) < 0) {
-            printf("[-] Socket option error\n", strerror(errno));
-            exit(1);
-        }
 
         // Need to send a UDP packet and accept a response from the server
         // Send UDP Packet

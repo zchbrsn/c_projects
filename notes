@@ -1,0 +1,137 @@
+
+|================================================================
+- Name: Linked List
+- Notes: 
+# Stores data with NODES that point to other nodes
+# Chains nodes together by pointing
+|================================================================
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# Types of linked lists
+Singly Linked List - has nodes that reference previous node
+Doubly Linked List - has nodes that point to bot the node ahead and behind
+Multiple Linked List - 
+Circularly Linked List - list whose tail -- the last node -- reference the head -- the first node (like a circle)
+Stack - Last in, First out (LIFO); head is only place for insertion and removal
+Queue - First in, First out (FIFO); doubly linked list that only removes from heads and adds to tail
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+|================================================================
+- Name:  Hash Table/Map/Set
+- Notes: 
+# Stores data with key value pairs
+# Accept a key and return a unique value
+# Designed to optimize searching, insertion, and deletion
+|================================================================
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+Hash Collision - when a hash function returns the same output for two distinct outputs
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+|================================================================
+- Name: Binary Tree
+- Notes: 
+# Like a tree where every node has at MOST two children (left and right)
+# Each node may have key, sattelite data, left ptr, right ptr, parent ptr
+|================================================================
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# Binary Search Tree
+Uses comparable keys to assign which direction
+Left child has a key LESS than parent node
+Right child has a key GREATER than parent node
+
+# Three types of tree walks
+Inorder - print out all keys in order: left , root, right 
+Postorder - left , right , roots
+Preorder - roots, left , right 
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+|================================================================
+- Name: Searches
+- Notes: 
+# Breadth First Search
+# Depth First Search
+|================================================================
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+Breadth First - searches levels of the tree starting from the root
+	Finds every node on the same level moving left to right
+	Tracks children nodes on current level
+	When finished, moves to left most node on next level
+
+Depth First - searches depth of tree first starting at the root
+	Traverses left until it cannot go further
+	Once it reaches the end of a branch, traverses back up
+	When finishing a branch, moves to the node right of root then goes left
+
+# Which is better?
+# Depends on the tree
+Breadth First for wide, shallow trees
+Depth First for narrow, deep trees
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+|================================================================
+- Name: Sorting
+- Notes: 
+# Merge Sort - divides all data into small sets, then compares them
+# Quick Sort - halves data set by average until all information is sorted
+# Bubble Sort - compares two elements moving smaller to the left; least efficient
+|================================================================
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+Merge Sort - comparison based
+	Divides entire dataset into two groups
+	Compares each number one at a time, smallest number to left
+	Compares left most elements to two leftmost pairs
+
+Quick Sort - comparison based
+	Divides entire dataset in half by selecting the average element and putting into smaller elements on left
+	Repeats until the left side is comparing only two elements
+	When left side is finished sorting, does the same to right
+
+Bubble Sort - comparison based
+	Easy to implement
+	Iterates left to right comparing every couplet
+	Repeats until no longer able to move an element to the left
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+|================================================================
+- Name: Recursion and Iteration
+- Notes: 
+# Recursion - calls itself in the function
+# Iteration - called repeatedly, but finitely
+|================================================================
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# Recursion
+Recursive case is a conditional statement used to trigger the recursion
+Base case is a conditional statement used to break the recursion
+	Used in Depth First Search
+
+# Iteration
+Increments through a data set
+Loops, for while, and until
+
+# Examples
+
+# Recursion
+recursive_method (array, n):
+	if not array[n]:
+		print array[n]
+		recursive_method(array, n+1)
+	else:
+		break
+
+# Iteration
+iterative_method (array):
+	for item in array:
+		print array[n]
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+

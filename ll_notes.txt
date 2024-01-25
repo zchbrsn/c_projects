@@ -1,0 +1,62 @@
+First need a struct for node.  Each struct needs a data type value and a node pointer next
+typedef struct node {} node_t;
+    datatype value;
+    struct node *next;
+
+Create and Add in Order - node_t *create (take in the **head and a value)
+	1. Allocate memory sizeof(node)
+	2. Set node->value = value; next=NULL
+	3. Base case - If the head == NULL or value < (*head)->value
+		a. node->next = *head
+		b. *head = node;
+		c. return node
+	4. General case - Find position to insert node into
+		a. node_t *current = *head
+		b. while (current->next != NULL && current->next->value < value)
+		c. current = current->next (Continue)
+		d. Otherwise, insert the new node
+		e. current->next = node; return node
+
+Print - void (takes in the *head)
+    1. Create a temp node to hold the current value and set it to head
+    2. While temp node is not NULL
+        a. Print temp->value
+        b. temp = temp->next
+
+Reverse - void (takes in the **head)
+	1. set prev, next = NULL; current = *head
+	2. while current != NULL
+	3. next = current->next		# Point next to current->next
+	4. current->next = prev		# Current points to previous
+	5. prev = current		# Previous moves to next node in list
+	6. current = next		# Current moves to the next node in list
+	7 *head = prev
+
+Find - node_t *find (take in the **head and a value)
+	1. current = *head
+	2. while current is not NULL
+	3. if current->value == value, return current
+	4. current = current->next
+	5. Otherwise, return NULL
+
+Remove - void (take in the **head and value to delete)
+	1.  Base case - destroying the head node
+		a. If the head is not null and (*head)->value == value
+		b. Create a temp node to be deleted and set equal to *head
+		c. *head = (*head)->next
+		d. free(temp)
+	2. General case - destroying other nodes; need to traverse linked list
+		a. Set current node to *head
+		b. while current->next != NULL && current->next != NULL
+		c. If the current->next->value == value
+		d. Create temp node = current->next
+		e. Set the current node->next = current node->next->next
+		f. free(temp)
+		g. Otherwise, current = current->next
+
+Destroy List - void (take in the **head)
+	1. Set temp = *head
+	2. while (*head != NULL)
+	3. temp = *head
+	4. head = (*head)->next
+	5. free(temp)
