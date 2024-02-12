@@ -1,0 +1,27 @@
+// Leet Code 1768. Merge Strings Alternately
+// Get the length of strings
+// Allocate total length of both strings concatenated + 1 for null terminator
+// When i or j are less than the length of their strings
+// Add word1[i], then increment the result and i
+// Add word2[i], then increment the result and j
+// If any leftover letters in i or j, it will continue adding to the end, finished by null terminator
+
+char * mergeAlternately(char * word1, char * word2){
+
+    int len1 = strlen(word1);
+    int len2 = strlen(word2);
+    char *result = malloc((len1 + len2 + 1) * sizeof(char));
+    int i = 0, j = 0, k = 0;
+
+    while (i < len1 || j < len2) {
+        if (i < len1) {
+            result[k++] = word1[i++];
+        }
+        if (j < len2) {
+            result[k++] = word2[j++];
+        }
+    }
+    result[k] = '\0';
+    return result;
+
+}
